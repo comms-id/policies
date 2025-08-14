@@ -1,0 +1,52 @@
+{
+  "name": "@comms-id/legal-documents",
+  "version": "0.0.1",
+  "description": "Centralised legal documents for Comms.ID platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "prepublishOnly": "pnpm build",
+    "test": "echo \"No tests configured\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "comms-id",
+    "legal",
+    "privacy",
+    "terms",
+    "policies",
+    "compliance"
+  ],
+  "author": "Comms.ID",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comms-id/policies.git"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^12.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
