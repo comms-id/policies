@@ -37,8 +37,8 @@
     "url": "git+https://github.com/comms-id/policies.git"
   },
   "publishConfig": {
-    "access": "restricted",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com/",
+    "access": "restricted"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
