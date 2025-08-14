@@ -73,7 +73,7 @@ jobs:
         id: bump
         run: |
           # Bump version based on commit
-          NEW_VERSION=$(npm version ${{ steps.version.bump }} --no-git-tag-version)
+          NEW_VERSION=$(npm version ${{ steps.version.outputs.bump }} --no-git-tag-version)
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           
           # Commit version bump
