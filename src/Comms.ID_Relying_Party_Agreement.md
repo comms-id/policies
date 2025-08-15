@@ -5,7 +5,7 @@
 **Version:** [Automated from package.json]
 -->
 
-This Relying Party Agreement ("Agreement") is a binding legal contract between **Comms.ID Pty Ltd** (ACN [Your ACN]), a company incorporated in Queensland, Australia ("Comms.ID," "we," "us," "our"), and the entity registering to use the Comms.ID platform as a Relying Party ("Relying Party," "you," "your").
+This Relying Party Agreement ("Agreement") is a binding legal contract between **Comms.ID Pty Ltd** (ACN: 686 963 904), a company incorporated in Queensland, Australia ("Comms.ID," "we," "us," "our"), and the entity registering to use the Comms.ID platform as a Relying Party ("Relying Party," "you," "your").
 
 By registering a client, integrating with our platform, or using the Comms.ID Services, you agree to be bound by the terms and conditions of this Agreement.
 
