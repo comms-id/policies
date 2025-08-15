@@ -6,37 +6,73 @@ const { marked } = require('marked');
 const matter = require('gray-matter');
 const crypto = require('crypto');
 
-const SRC_DIR = path.join(__dirname, '..', 'src');
-const DIST_DIR = path.join(__dirname, '..', 'dist');
+// Paths
+const ROOT_DIR = path.join(__dirname, '..');
+const SRC_DIR = path.join(ROOT_DIR, 'src');
+const DIST_DIR = path.join(ROOT_DIR, 'dist');
+const VERSIONS_FILE = path.join(__dirname, 'document-versions.json');
 
-// Map of source files to export names
+// Document mapping
 const FILE_MAP = {
   'Comms.ID_Privacy_Policy.md': 'privacyPolicy',
   'Comms.ID_Terms_of_Use.md': 'termsOfUse',
   'Comms.ID_ISP_ASP_Privacy_Notice.md': 'ispAspPrivacyNotice',
   'Comms.ID_IDX_Privacy_Notice.md': 'idxPrivacyNotice',
-  'Comms.ID_Relying_Party_Agreement.md': 'relyingPartyAgreement'
+  'Comms.ID_Relying_Party_Agreement.md': 'relyingPartyAgreement',
 };
 
-// Create src directory structure from existing files
-async function setupSourceFiles() {
-  const policiesRoot = path.dirname(SRC_DIR);
+// Load or initialize document versions
+async function loadDocumentVersions() {
+  try {
+    const data = await fs.readFile(VERSIONS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    // Initialize if file doesn't exist
+    const initial = {};
+    for (const filename of Object.keys(FILE_MAP)) {
+      initial[filename] = {
+        version: "1.0.0",
+        lastContentHash: ""
+      };
+    }
+    return initial;
+  }
+}
+
+// Save document versions
+async function saveDocumentVersions(versions) {
+  await fs.writeFile(VERSIONS_FILE, JSON.stringify(versions, null, 2));
+}
+
+// Increment version based on type of change
+function incrementVersion(version, changeType = 'patch') {
+  const [major, minor, patch] = version.split('.').map(Number);
   
-  // Create src directory if it doesn't exist
+  switch(changeType) {
+    case 'major':
+      return `${major + 1}.0.0`;
+    case 'minor':
+      return `${major}.${minor + 1}.0`;
+    case 'patch':
+    default:
+      return `${major}.${minor}.${patch + 1}`;
+  }
+}
+
+// Setup source files
+async function setupSourceFiles() {
+  // Ensure src directory exists
   await fs.mkdir(SRC_DIR, { recursive: true });
   
-  // Move markdown files to src if they're in root
+  // Copy files from root to src if they exist in root
   for (const filename of Object.keys(FILE_MAP)) {
-    const rootPath = path.join(policiesRoot, filename);
+    const rootPath = path.join(ROOT_DIR, filename);
     const srcPath = path.join(SRC_DIR, filename);
     
     try {
-      // Check if file exists in root
       await fs.access(rootPath);
-      // Copy to src (don't move in case we want to preserve original location)
-      const content = await fs.readFile(rootPath, 'utf-8');
-      await fs.writeFile(srcPath, content);
-      console.log(`✅ Copied ${filename} to src/`);
+      await fs.copyFile(rootPath, srcPath);
+      console.log(`✅ ${filename} copied to src/`);
     } catch (error) {
       // File might already be in src or not exist
       try {
@@ -49,21 +85,55 @@ async function setupSourceFiles() {
   }
 }
 
+// Get clean content for hashing (remove comments and normalize whitespace)
+function getCleanContent(content) {
+  return content
+    .replace(/<!--[\s\S]*?-->/g, '') // Remove HTML comments
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+}
+
 // Convert markdown to various formats
-function processMarkdown(content, filename) {
+async function processMarkdown(content, filename, documentVersions) {
   // Parse frontmatter if present
   const { data: frontmatter, content: markdownContent } = matter(content);
   
-  // Get package version
-  const packageJson = require('../package.json');
+  // Calculate content hash to detect real changes
+  const cleanContent = getCleanContent(markdownContent);
+  const contentHash = crypto.createHash('sha256').update(cleanContent).digest('hex');
   
-  // Get last Git commit date for this file
+  // Get or initialize version info for this document
+  let versionInfo = documentVersions[filename] || {
+    version: "1.0.0",
+    lastContentHash: ""
+  };
+  
+  // Check if content actually changed
+  let documentVersion = versionInfo.version;
+  if (versionInfo.lastContentHash && versionInfo.lastContentHash !== contentHash) {
+    // Content changed, increment version
+    documentVersion = incrementVersion(versionInfo.version);
+    console.log(`📝 ${filename} content changed: ${versionInfo.version} → ${documentVersion}`);
+  }
+  
+  // Update version info
+  documentVersions[filename] = {
+    version: documentVersion,
+    lastContentHash: contentHash
+  };
+  
+  // Get last Git commit date for this specific file
   const { execSync } = require('child_process');
   let gitDate;
   try {
-    // Get the last commit date for this specific file
     const srcPath = path.join(SRC_DIR, filename);
     gitDate = execSync(`git log -1 --format=%cI -- "${srcPath}" 2>/dev/null || echo ""`, { encoding: 'utf-8' }).trim();
+    
+    // If no git history for this file, try the root file
+    if (!gitDate) {
+      const rootPath = path.join(ROOT_DIR, filename);
+      gitDate = execSync(`git log -1 --format=%cI -- "${rootPath}" 2>/dev/null || echo ""`, { encoding: 'utf-8' }).trim();
+    }
   } catch {
     gitDate = null;
   }
@@ -86,7 +156,7 @@ function processMarkdown(content, filename) {
     lines.splice(titleIndex + 1, 0, 
       '',
       `**${dateLabel}:** ${gitDate ? new Date(gitDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`,
-      `**Version:** ${packageJson.version}`,
+      `**Version:** ${documentVersion}`,
       ''
     );
     markdown = lines.join('\n');
@@ -107,7 +177,7 @@ function processMarkdown(content, filename) {
     .replace(/\n\n+/g, '\n\n')
     .trim();
   
-  // Generate hash
+  // Generate hash of the full content (for integrity)
   const hash = crypto.createHash('sha256').update(content).digest('hex');
   
   return {
@@ -115,11 +185,13 @@ function processMarkdown(content, filename) {
     html,
     plainText,
     metadata: {
-      version: packageJson.version,
+      // Start with frontmatter, then add computed values
+      ...frontmatter,
+      // Override with computed values
+      version: documentVersion,
       lastUpdated: gitDate || new Date().toISOString(),
       filename,
-      hash,
-      ...frontmatter
+      hash
     }
   };
 }
@@ -131,6 +203,9 @@ async function build() {
   try {
     // Setup source files
     await setupSourceFiles();
+    
+    // Load existing document versions
+    const documentVersions = await loadDocumentVersions();
     
     // Create dist directory
     await fs.mkdir(DIST_DIR, { recursive: true });
@@ -144,7 +219,7 @@ async function build() {
       
       try {
         const content = await fs.readFile(filePath, 'utf-8');
-        const processed = processMarkdown(content, filename);
+        const processed = await processMarkdown(content, filename, documentVersions);
         
         // Add to exports
         exports[exportName] = processed;
@@ -152,14 +227,21 @@ async function build() {
         // Add type definition
         typeDefinitions.push(`export const ${exportName}: Policy;`);
         
-        console.log(`✅ Processed ${filename} → ${exportName}`);
+        console.log(`✅ Processed ${filename} → ${exportName} (v${processed.metadata.version})`);
       } catch (error) {
         console.log(`⚠️  Skipping ${filename}: ${error.message}`);
       }
     }
     
+    // Save updated document versions
+    await saveDocumentVersions(documentVersions);
+    
+    // Get package version for the overall package
+    const packageJson = require('../package.json');
+    
     // Generate main index.js
     const indexContent = `// Auto-generated legal documents export
+// Package version: ${packageJson.version}
 // Generated at: ${new Date().toISOString()}
 
 ${Object.entries(exports).map(([name, data]) => 
@@ -171,14 +253,24 @@ ${Object.keys(exports).map(name => `  ${name}`).join(',\n')}
 };
 `;
     
-    await fs.writeFile(path.join(DIST_DIR, 'index.js'), indexContent);
-    
     // Generate CommonJS version
-    const cjsContent = indexContent.replace(/export const/g, 'exports.').replace(/export {/g, 'module.exports = {');
-    await fs.writeFile(path.join(DIST_DIR, 'index.cjs'), cjsContent);
+    const cjsContent = `// Auto-generated legal documents export (CommonJS)
+// Package version: ${packageJson.version}
+// Generated at: ${new Date().toISOString()}
+
+${Object.entries(exports).map(([name, data]) => 
+  `exports.${name} = ${JSON.stringify(data, null, 2)};`
+).join('\n\n')}
+
+exports.allDocuments = {
+${Object.keys(exports).map(name => `  ${name}: exports.${name}`).join(',\n')}
+};
+`;
     
     // Generate TypeScript definitions
-    const typeContent = `// TypeScript definitions for legal documents
+    const typeContent = `// Auto-generated type definitions for legal documents
+// Package version: ${packageJson.version}
+
 export interface Policy {
   markdown: string;
   html: string;
@@ -194,12 +286,17 @@ export interface Policy {
 
 ${typeDefinitions.join('\n')}
 
-export const allDocuments: Record<string, Policy>;
+export declare const allDocuments: {
+${Object.keys(exports).map(name => `  ${name}: Policy;`).join('\n')}
+};
 `;
     
+    // Write output files
+    await fs.writeFile(path.join(DIST_DIR, 'index.js'), indexContent);
+    await fs.writeFile(path.join(DIST_DIR, 'index.cjs'), cjsContent);
     await fs.writeFile(path.join(DIST_DIR, 'index.d.ts'), typeContent);
     
-    console.log('\n✨ Build complete!');
+    console.log(`\n✨ Build complete!`);
     console.log(`📦 Output: ${DIST_DIR}`);
     console.log(`📄 Documents exported: ${Object.keys(exports).length}`);
     
@@ -210,8 +307,4 @@ export const allDocuments: Record<string, Policy>;
 }
 
 // Run build
-if (require.main === module) {
-  build();
-}
-
-module.exports = { build };
+build();

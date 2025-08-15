@@ -1,0 +1,22 @@
+{
+  "Comms.ID_Privacy_Policy.md": {
+    "version": "1.0.0",
+    "lastContentHash": "fefe7b6ea176fa4d55a03eac1fb8d98223eb1b59acba875929c94923db57d5be"
+  },
+  "Comms.ID_Terms_of_Use.md": {
+    "version": "1.0.0",
+    "lastContentHash": "23684287f924a3a0f59fde37043b1a11e9a6490ac4d0d2f38c2a8d31f70b76dd"
+  },
+  "Comms.ID_ISP_ASP_Privacy_Notice.md": {
+    "version": "1.0.0",
+    "lastContentHash": "e7ae1da4f812a5dae5fe5120f66a3673932100b037211a4ad925979ca8fdf738"
+  },
+  "Comms.ID_IDX_Privacy_Notice.md": {
+    "version": "1.0.0",
+    "lastContentHash": "9e90fc5336f437dbb093dddf980623304f5acbb1fd8e4488fcda7131f8592654"
+  },
+  "Comms.ID_Relying_Party_Agreement.md": {
+    "version": "1.0.1",
+    "lastContentHash": "7e2b25b5909752670696dcea5153595f4812cffbc12c0769ef917274e6f1953e"
+  }
+}

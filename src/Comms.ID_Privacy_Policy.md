@@ -1,9 +1,12 @@
-# **Comms.ID Privacy Policy**
+---
+title: Comms.ID Privacy Policy
+description: Privacy Policy for COMMS.ID digital identity platform
+type: privacy-policy
+author: COMMS.ID PTY LTD
+jurisdiction: Queensland, Australia
+---
 
-<!--
-**Last Updated:** [automatically managed by CI/CD pipeline using Git history]
-**Version:** [Automated from package.json]
--->
+# **Comms.ID Privacy Policy**
 
 ## **1. Our Commitment to You**
 

@@ -1,9 +1,13 @@
-# **Comms.ID Identity Exchange Privacy Notice**
+---
+title: Comms.ID Identity Exchange Privacy Notice
+description: Privacy Notice for Identity Exchange (IXP) functions
+type: privacy-notice
+role: IXP
+author: COMMS.ID PTY LTD
+jurisdiction: Queensland, Australia
+---
 
-<!--
-**Last Updated:** [automatically managed by CI/CD pipeline using Git history]
-**Version:** [Automated from package.json]
--->
+# **Comms.ID Identity Exchange Privacy Notice**
 
 ## **1. Purpose of This Notice**
 

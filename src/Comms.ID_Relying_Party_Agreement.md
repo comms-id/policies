@@ -1,9 +1,12 @@
-# **Comms.ID Relying Party Agreement**
+---
+title: Comms.ID Relying Party Agreement
+description: Agreement for entities using COMMS.ID as a Relying Party
+type: agreement
+author: COMMS.ID PTY LTD
+jurisdiction: Queensland, Australia
+---
 
-<!--
-**Effective Date:** [automatically managed by CI/CD pipeline using Git history]
-**Version:** [Automated from package.json]
--->
+# **Comms.ID Relying Party Agreement**
 
 This Relying Party Agreement ("Agreement") is a binding legal contract between **Comms.ID Pty Ltd** (ACN: 686 963 904), a company incorporated in Queensland, Australia ("Comms.ID," "we," "us," "our"), and the entity registering to use the Comms.ID platform as a Relying Party ("Relying Party," "you," "your").
 
@@ -13,7 +16,7 @@ By registering a client, integrating with our platform, or using the Comms.ID Se
 
 Comms.ID provides a secure digital identity platform ("Platform" or "Services") designed to combat fraud and build digital trust. Our Platform operates in alignment with the Australian Government Digital ID System (AGDIS).
 
-1.1. **Voluntary Alignment with AGDIS:** AGDIS is a voluntary accreditation scheme. While Comms.ID is on the journey to achieve formal accreditation, we have built our Platform from the ground up to adopt and conform to all relevant aspects of the AGDIS framework, including the _Digital ID Act 2024_, associated Rules, Data Standards, and the _Privacy Act 1988_. We aim to meet and exceed the best practices and legal requirements of the AGDIS framework.
+1.1. **Voluntary Alignment with AGDIS:** AGDIS is a voluntary accreditation scheme. While Comms.ID is on the journey to achieve formal accreditation, we have built our Platform from the ground up to adopt and conform to all relevant aspects of the AGDIS framework, including the _Digital ID Act 2024_, associated Rules, Data Standards, and the _Privacy Act 1988_. We aim to meet and exceed the best practices and legal requirements of the AGDIS framework. Our commitment to these standards is unwavering regardless of our accreditation status.
 
 1.2. **Interoperability and Separation of Roles:** The AGDIS framework is designed for interoperability. This separation of roles (Identity Service Provider, Attribute Service Provider, Identity Exchange) is a fundamental requirement of the system's design to enhance privacy and security. While Comms.ID currently provides an integrated ecosystem, our architecture anticipates future interoperability with other accredited providers. This Agreement governs your use of our Platform within this framework.
 

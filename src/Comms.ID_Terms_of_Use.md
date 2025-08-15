@@ -1,9 +1,12 @@
-# **Comms.ID End-User Terms of Use**
+---
+title: Comms.ID End-User Terms of Use
+description: Terms of Use for COMMS.ID digital identity platform
+type: terms-of-use
+author: COMMS.ID PTY LTD
+jurisdiction: Queensland, Australia
+---
 
-<!--
-**Last Updated:** [automatically managed by CI/CD pipeline using Git history]
-**Version:** [Automated from package.json]
--->
+# **Comms.ID End-User Terms of Use**
 
 Welcome to Comms.ID. These Terms of Use ("Terms") form a binding legal agreement between you ("you," "your") and Comms.ID Pty Ltd ("Comms.ID," "we," "us," "our"). This agreement governs your access to and use of the Comms.ID platform, including our applications (web, iOS, Android), services, and websites.
 
