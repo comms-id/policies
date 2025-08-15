@@ -8,25 +8,34 @@ This package provides a single source of truth for all Comms.ID legal documents 
 
 ## Features
 
-- 📝 **Single Source of Truth** - Markdown files as the canonical source
-- 🔄 **Automated Publishing** - GitHub Actions publishes to NPM on every commit
+- 📝 **Single Source of Truth** - Markdown files with YAML frontmatter as the canonical source
+- 🔄 **Automated Publishing** - GitHub Actions publishes to GitHub Packages on every commit
 - 📦 **Multiple Formats** - Exports as Markdown, HTML, Plain Text, and JSON
-- 🏷️ **Semantic Versioning** - Automatic version bumping based on commits
+- 🏷️ **Independent Document Versioning** - Each document has its own version, only incremented when content changes
+- 📊 **Content Hashing** - Detects real content changes (ignoring whitespace/comments)
 - 📱 **Mobile-Optimized** - Lightweight package suitable for mobile apps
 - 🔍 **Full Text Search** - Searchable content in all formats
 - ⚡ **Tree-Shakeable** - Import only the policies you need
+- 📄 **Frontmatter Support** - Documents include metadata (title, description, type, author, jurisdiction)
 
 ## Installation
 
 ```bash
 # For monorepo/apps/www
-pnpm add @comms-id/policies
+pnpm add @comms-id/legal-documents
 
 # For monocomms apps
-pnpm add @comms-id/policies
+pnpm add @comms-id/legal-documents
 
 # Always get latest
-pnpm add @comms-id/policies@latest
+pnpm add @comms-id/legal-documents@latest
+```
+
+**Note:** This package is published to GitHub Packages, not NPM. Ensure your `.npmrc` is configured:
+
+```bash
+@comms-id:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
 
 ## Usage
@@ -34,8 +43,8 @@ pnpm add @comms-id/policies@latest
 ### Basic Import
 
 ```typescript
-import { privacyPolicy, termsOfUse } from "@comms-id/policies";
-import { version } from "@comms-id/policies/package.json";
+import { privacyPolicy, termsOfUse } from "@comms-id/legal-documents";
+import { version } from "@comms-id/legal-documents/package.json";
 
 // Access different formats
 console.log(privacyPolicy.markdown); // Raw markdown
@@ -48,13 +57,12 @@ console.log(privacyPolicy.metadata); // Version, date, hash
 
 ```typescript
 // app/privacy/page.tsx
-import { privacyPolicy } from "@comms-id/policies";
-import { version } from "@comms-id/policies/package.json";
+import { privacyPolicy } from "@comms-id/legal-documents";
 
 export default function PrivacyPage() {
   return (
     <div className="container mx-auto p-6">
-      <h1>Privacy Policy v{version}</h1>
+      <h1>{privacyPolicy.metadata.title} v{privacyPolicy.metadata.version}</h1>
       <div
         className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: privacyPolicy.html }}
@@ -68,7 +76,7 @@ export default function PrivacyPage() {
 ### In React Native (monocomms/apps/comms-id-native-app)
 
 ```typescript
-import { privacyPolicy } from "@comms-id/policies";
+import { privacyPolicy } from "@comms-id/legal-documents";
 import { WebView } from "react-native-webview";
 
 export function PrivacyScreen() {
@@ -80,7 +88,7 @@ export function PrivacyScreen() {
 
 ```typescript
 // API route for PDF generation (apps/www/app/api/policies/[slug]/pdf/route.ts)
-import { privacyPolicy } from "@comms-id/policies";
+import { privacyPolicy } from "@comms-id/legal-documents";
 import { generatePDF } from "@/lib/pdf-generator";
 
 export async function GET(request, { params }) {
@@ -116,18 +124,21 @@ git push origin main
 GitHub Actions will:
 
 1. Run build script to convert MD → JS modules
-2. Bump version based on commit type:
-   - `fix:` → Patch (1.0.0 → 1.0.1)
-   - `feat:` → Minor (1.0.0 → 1.1.0)
-   - `BREAKING CHANGE:` → Major (1.0.0 → 2.0.0)
-3. Publish to NPM registry
+2. Each document version is tracked independently:
+   - Only documents with content changes get version bumps
+   - Version increments: patch (1.0.0 → 1.0.1) for content updates
+   - Package version follows conventional commits:
+     - `fix:` → Patch
+     - `feat:` → Minor
+     - `BREAKING CHANGE:` → Major
+3. Publish to GitHub Packages registry
 4. Create Git tag and GitHub release
 
 ### 4. Update Consumer Apps
 
 ```bash
 # In consumer apps
-pnpm update @comms-id/policies
+pnpm update @comms-id/legal-documents
 ```
 
 Or if using `"latest"` tag, updates automatically on next install.
@@ -143,7 +154,8 @@ Or if using `"latest"` tag, updates automatically on next install.
 │   ├── Comms.ID_IDX_Privacy_Notice.md
 │   └── Comms.ID_Relying_Party_Agreement.md
 ├── scripts/
-│   └── build.js                        # Build script (MD → JS)
+│   ├── build.js                        # Build script (MD → JS)
+│   └── document-versions.json          # Individual document version tracking
 ├── dist/                               # Generated output (gitignored)
 │   ├── index.js                       # Main exports
 │   ├── privacy-policy.js
@@ -173,12 +185,20 @@ Current policies exported by this package:
 
 ```typescript
 interface Policy {
-  markdown: string; // Original markdown content
+  markdown: string; // Original markdown content (with injected version/date)
   html: string; // Rendered HTML
   plainText: string; // Plain text version
   metadata: {
-    version: string; // Package version when built
-    lastUpdated: string; // ISO date string
+    // From frontmatter
+    title: string; // Document title
+    description: string; // Document description
+    type: string; // Document type (privacy-policy, terms-of-use, agreement, etc.)
+    author: string; // Author organization
+    jurisdiction: string; // Legal jurisdiction
+    role?: string; // For privacy notices (ISP/ASP, IXP)
+    // Computed values
+    version: string; // Individual document version
+    lastUpdated: string; // ISO date string from Git history
     filename: string; // Original filename
     hash: string; // SHA256 hash of content
   };
@@ -195,17 +215,21 @@ export const ispAspPrivacyNotice: Policy;
 export const idxPrivacyNotice: Policy;
 export const relyingPartyAgreement: Policy;
 
-// Convenience export for all policies
-export const allPolicies: Record<string, Policy>;
+// Convenience export for all documents
+export const allDocuments: Record<string, Policy>;
 ```
 
 ## Versioning Strategy
 
-This package follows semantic versioning:
+### Package Version
+The package follows semantic versioning based on conventional commits.
 
-- **Patch** (1.0.x): Typo fixes, formatting changes
-- **Minor** (1.x.0): Policy updates, new sections
-- **Major** (x.0.0): Breaking changes, legal implications
+### Document Versions
+Each document maintains its own version:
+- Versions only increment when document content actually changes
+- Whitespace and comment changes are ignored
+- Content changes tracked via SHA256 hashing
+- Version format: `major.minor.patch` (e.g., 1.0.1)
 
 ### Commit Convention
 
@@ -228,8 +252,10 @@ The GitHub Actions workflow handles:
 
 1. **Trigger**: Push to main branch
 2. **Build**: Convert markdown to distribution formats
-3. **Version**: Bump based on commit messages
-4. **Publish**: Push to NPM registry
+3. **Version**: 
+   - Package version: Bump based on commit messages
+   - Document versions: Increment only for changed documents
+4. **Publish**: Push to GitHub Packages registry
 5. **Release**: Create GitHub release with changelog
 
 ## Local Development
@@ -254,7 +280,7 @@ pnpm link
 pnpm link
 
 # In consumer app
-pnpm link @comms-id/policies
+pnpm link @comms-id/legal-documents
 ```
 
 ## Troubleshooting
@@ -264,7 +290,10 @@ pnpm link @comms-id/policies
 ```bash
 # Clear cache and reinstall
 pnpm store prune
-pnpm install @comms-id/policies@latest --force
+pnpm install @comms-id/legal-documents@latest --force
+
+# Ensure NPM_TOKEN is set for GitHub Packages
+export NPM_TOKEN=ghp_your_token_here
 ```
 
 ### Build Failures
@@ -276,10 +305,10 @@ Check GitHub Actions logs at:
 
 ```bash
 # Check installed version
-pnpm list @comms-id/policies
+pnpm list @comms-id/legal-documents
 
 # Force specific version
-pnpm add @comms-id/policies@1.2.3
+pnpm add @comms-id/legal-documents@1.2.3
 ```
 
 ## Future Enhancements
