@@ -1,7 +1,9 @@
-# **Comms.ID Privacy Policy (Final Draft)**
+# **Comms.ID Privacy Policy**
 
-**Last Updated:** 9 May 2025
-**Version:** 0.1
+<!--
+**Last Updated:** [automatically managed by CI/CD pipeline using Git history]
+**Version:** [Automated from package.json]
+-->
 
 ## **1. Our Commitment to You**
 
@@ -31,14 +33,14 @@ Our roles include:
 
 You can find detailed information on how we handle data in these specific roles in our dedicated notices:
 
-- [Link to Identity Services Privacy Notice]
-- [Link to Identity Exchange Privacy Notice]
+- [Identity Services Privacy Notice](/privacy-identity-services)
+- [Identity Exchange Privacy Notice](/privacy-identity-exchange)
 
 ## **3. Our Legal Obligations and Data Minimisation**
 
 We are subject to strict legal obligations that govern how we operate. The **AML/CTF Act**, in particular, requires both us and many of the Relying Parties that use our services (e.g., banks) to verify your identity to a high standard and keep records of those verifications. This may require us to collect specific information and retain verification records for a minimum of 7 years, even after you close your account. These are mandatory legal duties designed to prevent serious crime.
 
-At the same time, we are deeply committed to **data minimisation**. We believe your data should not be duplicated unnecessarily across the internet. Our "Access vs. Access and Duplicate" consent model, which is explained in our Identity Exchange Privacy Notice, is designed specifically to limit the spread of your personal information, giving you greater control and security than traditional online services.
+At the same time, we are deeply committed to **data minimisation**. We believe your data should not be duplicated unnecessarily across the internet. Our "Access vs. Access and Duplicate" consent model, which is explained in our [Identity Exchange Privacy Notice](/privacy-identity-exchange), is designed specifically to limit the spread of your personal information, giving you greater control and security than traditional online services.
 
 ## **4. Your Privacy Rights**
 

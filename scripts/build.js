@@ -52,9 +52,43 @@ async function setupSourceFiles() {
 // Convert markdown to various formats
 function processMarkdown(content, filename) {
   // Parse frontmatter if present
-  const { data: frontmatter, content: markdown } = matter(content);
+  const { data: frontmatter, content: markdownContent } = matter(content);
   
-  // Generate HTML
+  // Get package version
+  const packageJson = require('../package.json');
+  
+  // Get last Git commit date for this file
+  const { execSync } = require('child_process');
+  let gitDate;
+  try {
+    // Get the last commit date for this specific file
+    const srcPath = path.join(SRC_DIR, filename);
+    gitDate = execSync(`git log -1 --format=%cI -- "${srcPath}" 2>/dev/null || echo ""`, { encoding: 'utf-8' }).trim();
+  } catch {
+    gitDate = null;
+  }
+  
+  // Remove manual version/date lines and inject automated ones
+  let markdown = markdownContent;
+  
+  // Remove existing "Last Updated" and "Version" lines
+  markdown = markdown.replace(/\*\*Last Updated:\*\*.+\n/gi, '');
+  markdown = markdown.replace(/\*\*Version:\*\*.+\n/gi, '');
+  
+  // Inject automated version and date at the top (after the title)
+  const lines = markdown.split('\n');
+  const titleIndex = lines.findIndex(line => line.startsWith('#'));
+  if (titleIndex !== -1) {
+    lines.splice(titleIndex + 1, 0, 
+      '',
+      `**Last Updated:** ${gitDate ? new Date(gitDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+      `**Version:** ${packageJson.version}`,
+      ''
+    );
+    markdown = lines.join('\n');
+  }
+  
+  // Generate HTML with the updated markdown
   const html = marked(markdown);
   
   // Generate plain text (strip HTML tags)
@@ -72,16 +106,13 @@ function processMarkdown(content, filename) {
   // Generate hash
   const hash = crypto.createHash('sha256').update(content).digest('hex');
   
-  // Get package version
-  const packageJson = require('../package.json');
-  
   return {
     markdown,
     html,
     plainText,
     metadata: {
       version: packageJson.version,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: gitDate || new Date().toISOString(),
       filename,
       hash,
       ...frontmatter

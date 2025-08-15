@@ -1,7 +1,9 @@
 # **Comms.ID Identity Exchange Privacy Notice**
 
-**Last Updated:** 9 May 2025
-**Version:** 0.1
+<!--
+**Last Updated:** [automatically managed by CI/CD pipeline using Git history]
+**Version:** [Automated from package.json]
+-->
 
 ## **1. Purpose of This Notice**
 
@@ -54,4 +56,4 @@ We retain this de-identified data for auditing, security monitoring, and fraud i
 
 You are always in charge of who you share your information with. You can view and revoke any ongoing consents you have granted to Relying Parties at any time through the Comms.ID mobile or web applications. Revoking consent means that Relying Party can no longer use our service to verify your identity until you grant consent again.
 
-For questions about these practices, please contact us using the secure channels listed in our **Privacy Notice**.
+For questions about these practices, please contact us using the secure channels listed in our **[Privacy Policy](/privacy)**.
