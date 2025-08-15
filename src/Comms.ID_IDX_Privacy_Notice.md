@@ -60,4 +60,4 @@ We retain this de-identified data for auditing, security monitoring, and fraud i
 
 You are always in charge of who you share your information with. You can view and revoke any ongoing consents you have granted to Relying Parties at any time through the Comms.ID mobile or web applications. Revoking consent means that Relying Party can no longer use our service to verify your identity until you grant consent again.
 
-For questions about these practices, please contact us using the secure channels listed in our **[Privacy Policy](/privacy)**.
+For questions about these practices, please contact us using the secure channels listed in our **[Privacy Policy](/legals/privacy)**.

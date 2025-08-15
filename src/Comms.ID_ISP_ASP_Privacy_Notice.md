@@ -79,6 +79,6 @@ Please note that withdrawing consent for biometric processing will result in the
 
 ## **5. Record Keeping and Your Data**
 
-As outlined in our [Privacy Policy](/privacy), we are subject to legal obligations, including the _Anti-Money Laundering and Counter-Terrorism Financing Act 2006_. This requires us to keep records of identity verification actions and the evidence used for that verification for a minimum period of 7 years. This retention requirement **applies to the images of the identity documents you provided** during setup.
+As outlined in our [Privacy Policy](/legals/privacy), we are subject to legal obligations, including the _Anti-Money Laundering and Counter-Terrorism Financing Act 2006_. This requires us to keep records of identity verification actions and the evidence used for that verification for a minimum period of 7 years. This retention requirement **applies to the images of the identity documents you provided** during setup.
 
 However, this legal retention requirement **does not apply to your biometric data**. As stated above, all biometric templates, authentication images, and videos are permanently destroyed upon account closure.

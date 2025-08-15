@@ -36,14 +36,14 @@ Our roles include:
 
 You can find detailed information on how we handle data in these specific roles in our dedicated notices:
 
-- [Identity Services Privacy Notice](/privacy-identity-services)
-- [Identity Exchange Privacy Notice](/privacy-identity-exchange)
+- [Identity Services Privacy Notice](/legals/privacy-identity-services)
+- [Identity Exchange Privacy Notice](/legals/privacy-identity-exchange)
 
 ## **3. Our Legal Obligations and Data Minimisation**
 
 We are subject to strict legal obligations that govern how we operate. The **AML/CTF Act**, in particular, requires both us and many of the Relying Parties that use our services (e.g., banks) to verify your identity to a high standard and keep records of those verifications. This may require us to collect specific information and retain verification records for a minimum of 7 years, even after you close your account. These are mandatory legal duties designed to prevent serious crime.
 
-At the same time, we are deeply committed to **data minimisation**. We believe your data should not be duplicated unnecessarily across the internet. Our "Access vs. Access and Duplicate" consent model, which is explained in our [Identity Exchange Privacy Notice](/privacy-identity-exchange), is designed specifically to limit the spread of your personal information, giving you greater control and security than traditional online services.
+At the same time, we are deeply committed to **data minimisation**. We believe your data should not be duplicated unnecessarily across the internet. Our "Access vs. Access and Duplicate" consent model, which is explained in our [Identity Exchange Privacy Notice](/legals/privacy-identity-exchange), is designed specifically to limit the spread of your personal information, giving you greater control and security than traditional online services.
 
 ## **4. Your Privacy Rights**
 

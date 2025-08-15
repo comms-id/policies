@@ -1,19 +1,19 @@
 {
   "Comms.ID_Privacy_Policy.md": {
-    "version": "1.0.0",
-    "lastContentHash": "fefe7b6ea176fa4d55a03eac1fb8d98223eb1b59acba875929c94923db57d5be"
+    "version": "1.0.1",
+    "lastContentHash": "f5ea5ef9b9c4c0bc48dfb828ab7a8311eb8921c139221948d000804ff513ef04"
   },
   "Comms.ID_Terms_of_Use.md": {
-    "version": "1.0.0",
-    "lastContentHash": "23684287f924a3a0f59fde37043b1a11e9a6490ac4d0d2f38c2a8d31f70b76dd"
+    "version": "1.0.1",
+    "lastContentHash": "80ce1a0605a7dd553512db1de3e0ca5bbd61f3a2e1c455f38bc4cf34ac52f645"
   },
   "Comms.ID_ISP_ASP_Privacy_Notice.md": {
-    "version": "1.0.0",
-    "lastContentHash": "e7ae1da4f812a5dae5fe5120f66a3673932100b037211a4ad925979ca8fdf738"
+    "version": "1.0.1",
+    "lastContentHash": "3b975b2a65bd38ec4b276c74d70d0a7d38eb7b7ef6c560d9d20315bfc90add11"
   },
   "Comms.ID_IDX_Privacy_Notice.md": {
-    "version": "1.0.0",
-    "lastContentHash": "9e90fc5336f437dbb093dddf980623304f5acbb1fd8e4488fcda7131f8592654"
+    "version": "1.0.1",
+    "lastContentHash": "c9209653826ab1ab28de3e25a602aec9654a946de21646075efdc71e75c14a35"
   },
   "Comms.ID_Relying_Party_Agreement.md": {
     "version": "1.0.1",

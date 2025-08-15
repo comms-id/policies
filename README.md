@@ -44,25 +44,26 @@ pnpm add @comms-id/legal-documents@latest
 
 ```typescript
 import { privacyPolicy, termsOfUse } from "@comms-id/legal-documents";
-import { version } from "@comms-id/legal-documents/package.json";
 
 // Access different formats
-console.log(privacyPolicy.markdown); // Raw markdown
+console.log(privacyPolicy.markdown); // Raw markdown with injected version/date
 console.log(privacyPolicy.html); // Rendered HTML
 console.log(privacyPolicy.plainText); // Plain text
-console.log(privacyPolicy.metadata); // Version, date, hash
+console.log(privacyPolicy.metadata); // Full metadata object
+console.log(privacyPolicy.metadata.version); // Individual document version
 ```
 
 ### In Next.js App (monorepo/apps/www)
 
 ```typescript
-// app/privacy/page.tsx
+// app/(app)/(root)/legals/privacy/page.tsx
 import { privacyPolicy } from "@comms-id/legal-documents";
 
 export default function PrivacyPage() {
   return (
     <div className="container mx-auto p-6">
-      <h1>{privacyPolicy.metadata.title} v{privacyPolicy.metadata.version}</h1>
+      <h1>{privacyPolicy.metadata.title}</h1>
+      <Badge>v{privacyPolicy.metadata.version}</Badge>
       <div
         className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: privacyPolicy.html }}
