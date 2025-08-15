@@ -71,9 +71,13 @@ function processMarkdown(content, filename) {
   // Remove manual version/date lines and inject automated ones
   let markdown = markdownContent;
   
-  // Remove existing "Last Updated" and "Version" lines
+  // Remove existing date and version lines (handles both "Last Updated" and "Effective Date")
   markdown = markdown.replace(/\*\*Last Updated:\*\*.+\n/gi, '');
+  markdown = markdown.replace(/\*\*Effective Date:\*\*.+\n/gi, '');
   markdown = markdown.replace(/\*\*Version:\*\*.+\n/gi, '');
+  
+  // Determine which date label to use based on document type
+  const dateLabel = filename.includes('Relying_Party_Agreement') ? 'Effective Date' : 'Last Updated';
   
   // Inject automated version and date at the top (after the title)
   const lines = markdown.split('\n');
@@ -81,7 +85,7 @@ function processMarkdown(content, filename) {
   if (titleIndex !== -1) {
     lines.splice(titleIndex + 1, 0, 
       '',
-      `**Last Updated:** ${gitDate ? new Date(gitDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+      `**${dateLabel}:** ${gitDate ? new Date(gitDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`,
       `**Version:** ${packageJson.version}`,
       ''
     );
