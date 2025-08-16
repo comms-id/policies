@@ -2,28 +2,19 @@
 
 This guide shows how to fetch legal documents at runtime instead of build time, ensuring users always see the latest policies.
 
-## Setup
+## Production API
 
-### 1. Deploy API Files
+The legal documents API is live at: **https://comms.id/api/legal/**
 
-The build process generates JSON files in `dist/api/`. These need to be served from your API:
+### Available Endpoints
 
-```bash
-# After building
-pnpm build
-
-# Deploy dist/api/ contents to your API server
-# e.g., https://api.comms.id/legal/
-```
-
-### 2. Set Environment Variable
-
-In your consuming app:
-
-```bash
-# .env.local
-NEXT_PUBLIC_LEGAL_API_URL=https://api.comms.id/legal
-```
+- **API Documentation**: https://comms.id/api/legal
+- **Manifest**: https://comms.id/api/legal/manifest.json
+- **Privacy Policy**: https://comms.id/api/legal/privacyPolicy.json
+- **Terms of Use**: https://comms.id/api/legal/termsOfUse.json
+- **ISP/ASP Privacy Notice**: https://comms.id/api/legal/ispAspPrivacyNotice.json
+- **IDX Privacy Notice**: https://comms.id/api/legal/idxPrivacyNotice.json
+- **Relying Party Agreement**: https://comms.id/api/legal/relyingPartyAgreement.json
 
 ## Usage in Next.js Apps
 
@@ -175,43 +166,17 @@ export default async function LegalPage({
 }
 ```
 
-## Deployment Options
+## Automated Deployment
 
-### Option 1: Static File Hosting (Recommended)
+The API is automatically deployed via GitHub Actions when policies are updated:
 
-Deploy the `dist/api/` folder to any static hosting:
+1. **Update Policy**: Make changes to source documents in the `policies` repository
+2. **Push to Main**: Commit and push changes
+3. **Automatic Build**: GitHub Action builds JSON files
+4. **Deploy to Vercel**: Files are copied to the monorepo and deployed
+5. **Live in ~1 minute**: Changes are available at https://comms.id/api/legal/
 
-- **Vercel**: Add to `public/api/legal/` in your Next.js app
-- **S3 + CloudFront**: Upload to S3, serve via CloudFront
-- **GitHub Pages**: Automated via GitHub Actions
-- **Nginx**: Serve as static files with CORS headers
-
-### Option 2: Edge Functions
-
-Create an edge function that serves the latest files:
-
-```typescript
-// api/legal/[document].ts
-export const runtime = 'edge';
-
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const document = url.pathname.split('/').pop()?.replace('.json', '');
-  
-  // Fetch from GitHub or your storage
-  const response = await fetch(
-    `https://raw.githubusercontent.com/comms-id/policies/main/dist/api/${document}.json`
-  );
-  
-  return new Response(response.body, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=60', // Cache for 1 minute
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
-}
-```
+No manual deployment required! The entire pipeline is automated.
 
 ## Benefits
 
