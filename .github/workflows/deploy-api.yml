@@ -1,0 +1,75 @@
+name: Deploy API Files
+
+on:
+  workflow_run:
+    workflows: ["Publish Package"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy-api:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout policies repo
+        uses: actions/checkout@v4
+        with:
+          repository: comms-id/policies
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build API files
+        run: pnpm build
+      
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          repository: comms-id/monorepo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: monorepo
+      
+      - name: Copy API files to monorepo
+        run: |
+          # Create api/legal directory if it doesn't exist
+          mkdir -p monorepo/apps/www/public/api/legal
+          
+          # Copy all JSON files from dist/api to public/api/legal
+          cp -r dist/api/* monorepo/apps/www/public/api/legal/
+          
+          echo "✅ API files copied to monorepo"
+          ls -la monorepo/apps/www/public/api/legal/
+      
+      - name: Commit and push API files
+        working-directory: monorepo
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Check if there are changes
+          if [ -n "$(git status --porcelain apps/www/public/api/legal/)" ]; then
+            git add apps/www/public/api/legal/
+            git commit -m "chore: update legal API files from policies@${{ github.sha }}"
+            git push
+            echo "✅ API files pushed to monorepo"
+          else
+            echo "ℹ️ No changes to API files"
+          fi
+      
+      - name: Trigger Vercel deployment
+        run: |
+          echo "✅ Vercel will automatically deploy the changes"
+          echo "API will be available at: https://www.comms.id/api/legal/"
