@@ -321,9 +321,42 @@ ${Object.keys(exports).map(name => `  ${name}: Policy;`).join('\n')}
     await fs.writeFile(path.join(DIST_DIR, 'index.cjs'), cjsContent);
     await fs.writeFile(path.join(DIST_DIR, 'index.d.ts'), typeContent);
     
+    // Generate API JSON files for runtime fetching
+    const apiDir = path.join(DIST_DIR, 'api');
+    await fs.mkdir(apiDir, { recursive: true });
+    
+    // Write individual document JSON files
+    for (const [name, data] of Object.entries(exports)) {
+      await fs.writeFile(
+        path.join(apiDir, `${name}.json`),
+        JSON.stringify(data, null, 2)
+      );
+    }
+    
+    // Write combined manifest with all documents
+    const manifest = {
+      version: packageJson.version,
+      generated: new Date().toISOString(),
+      documents: Object.keys(exports).reduce((acc, name) => {
+        acc[name] = {
+          version: exports[name].metadata.version,
+          lastUpdated: exports[name].metadata.lastUpdated,
+          title: exports[name].metadata.title,
+          url: `/api/legal/${name}.json`
+        };
+        return acc;
+      }, {})
+    };
+    
+    await fs.writeFile(
+      path.join(apiDir, 'manifest.json'),
+      JSON.stringify(manifest, null, 2)
+    );
+    
     console.log(`\n✨ Build complete!`);
     console.log(`📦 Output: ${DIST_DIR}`);
     console.log(`📄 Documents exported: ${Object.keys(exports).length}`);
+    console.log(`🌐 API files generated: ${apiDir}`);
     
   } catch (error) {
     console.error('❌ Build failed:', error);
