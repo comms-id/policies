@@ -21,8 +21,6 @@ This package provides a single source of truth for all Comms.ID legal documents 
 
 This package is published to **GitHub Packages** (not public npm registry). You must configure authentication:
 
-**Note:** The environment variable is called `NPM_TOKEN` for historical reasons, but it's actually your GitHub Personal Access Token.
-
 ### 1. Create Personal Access Token
 
 Create a GitHub Personal Access Token with `read:packages` scope:
@@ -39,14 +37,14 @@ In the root of your monorepo (`/monorepo` or `/monocomms`), create or update `.n
 @comms-id:registry=https://npm.pkg.github.com
 
 # Authenticate with GitHub Packages
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
 ```
 
 Then set your token as an environment variable:
 
 ```bash
 # .env.local (don't commit this file)
-NPM_TOKEN=your_github_token_here
+GITHUB_PACKAGES_TOKEN=your_github_token_here
 ```
 
 ## Installation
