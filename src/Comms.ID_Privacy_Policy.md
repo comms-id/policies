@@ -12,7 +12,7 @@ jurisdiction: Queensland, Australia
 
 Welcome to Comms.ID. Our mission is to build a more trustworthy digital world by combating fraud and misinformation. We do this by providing a secure, high-assurance digital identity platform that replaces insecure, anonymous interactions with a verified and consent-driven ecosystem.
 
-Your privacy is not an afterthought; it is absolutely fundamental to our design and our mission. This Privacy Policy outlines our core privacy commitments and explains how we handle your personal information.
+Your privacy is not an afterthought; it is fundamental to our design and our mission. This Privacy Policy outlines our core privacy commitments and explains how we handle your personal information.
 
 **Our Legal Framework**
 
