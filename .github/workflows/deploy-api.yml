@@ -2,7 +2,7 @@ name: Deploy API Files
 
 on:
   workflow_run:
-    workflows: ["Publish Package"]
+    workflows: ["Publish Legal Documents"]
     types:
       - completed
   workflow_dispatch:
