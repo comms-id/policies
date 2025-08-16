@@ -316,7 +316,6 @@ pnpm add @comms-id/legal-documents@1.2.3
 
 - [ ] PDF generation in package
 - [ ] Diff view between versions
-- [ ] Multi-language support
 - [ ] Analytics integration
 - [ ] Webhook notifications for updates
 
