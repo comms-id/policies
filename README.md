@@ -1,62 +1,92 @@
 # Comms.ID Legal Documents
 
-Centralised, version-controlled legal documents for all products and applications
+Centralised, version-controlled legal documents for all Comms.ID products and applications
 
 ## Overview
 
-This package provides a single source of truth for all Comms.ID legal documents (Privacy Policy, Terms of Use, etc.) that can be consumed across multiple applications in various formats. It features automated versioning, NPM publishing, and CI/CD integration.
+This package provides a single source of truth for all Comms.ID legal documents (Privacy Policy, Terms of Use, etc.) that can be consumed across multiple applications in various formats. Documents are automatically versioned, published to GitHub Packages, and available in multiple formats.
 
 ## Features
 
 - 📝 **Single Source of Truth** - Markdown files with YAML frontmatter as the canonical source
 - 🔄 **Automated Publishing** - GitHub Actions publishes to GitHub Packages on every commit
-- 📦 **Multiple Formats** - Exports as Markdown, HTML, Plain Text, and JSON
+- 📦 **Multiple Formats** - Exports as Markdown, HTML, and Plain Text
 - 🏷️ **Independent Document Versioning** - Each document has its own version, only incremented when content changes
 - 📊 **Content Hashing** - Detects real content changes (ignoring whitespace/comments)
 - 📱 **Mobile-Optimized** - Lightweight package suitable for mobile apps
-- 🔍 **Full Text Search** - Searchable content in all formats
 - ⚡ **Tree-Shakeable** - Import only the policies you need
 - 📄 **Frontmatter Support** - Documents include metadata (title, description, type, author, jurisdiction)
 
+## GitHub Packages Setup (Required)
+
+This package is published to **GitHub Packages** (not public npm). You must configure authentication:
+
+### 1. Create Personal Access Token
+
+Create a GitHub Personal Access Token with `read:packages` scope:
+- Go to https://github.com/settings/tokens/new
+- Select scope: `read:packages`
+- Generate token and save it
+
+### 2. Configure Authentication
+
+In the root of your monorepo (`/monorepo` or `/monocomms`), create or update `.npmrc`:
+
+```bash
+# Tell pnpm to use GitHub Packages for @comms-id scope
+@comms-id:registry=https://npm.pkg.github.com
+
+# Authenticate with GitHub Packages
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
+```
+
+Then set your token as an environment variable:
+
+```bash
+# .env.local (don't commit this file)
+GITHUB_PACKAGES_TOKEN=your_github_token_here
+```
+
 ## Installation
 
-```bash
-# For monorepo/apps/www
-pnpm add @comms-id/legal-documents
-
-# For monocomms apps
-pnpm add @comms-id/legal-documents
-
-# Always get latest
-pnpm add @comms-id/legal-documents@latest
-```
-
-**Note:** This package is published to GitHub Packages, not NPM. Ensure your `.npmrc` is configured:
+Once authentication is configured:
 
 ```bash
-@comms-id:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+# Install in any app
+pnpm add @comms-id/legal-documents
+
+# Update to latest version
+pnpm update @comms-id/legal-documents
+
+# Install specific version
+pnpm add @comms-id/legal-documents@0.3.1
 ```
 
-## Usage
+## Usage Examples
 
 ### Basic Import
 
 ```typescript
-import { privacyPolicy, termsOfUse } from "@comms-id/legal-documents";
+import { 
+  privacyPolicy,
+  termsOfUse,
+  ispAspPrivacyNotice,
+  idxPrivacyNotice,
+  relyingPartyAgreement,
+  allDocuments
+} from "@comms-id/legal-documents";
 
-// Access different formats
-console.log(privacyPolicy.markdown); // Raw markdown with injected version/date
-console.log(privacyPolicy.html); // Rendered HTML
-console.log(privacyPolicy.plainText); // Plain text
-console.log(privacyPolicy.metadata); // Full metadata object
-console.log(privacyPolicy.metadata.version); // Individual document version
+// Each document contains:
+console.log(privacyPolicy.markdown);    // Raw markdown with injected version/date
+console.log(privacyPolicy.html);        // Rendered HTML
+console.log(privacyPolicy.plainText);   // Plain text
+console.log(privacyPolicy.metadata);    // Metadata object
 ```
 
-### In Next.js App (monorepo/apps/www)
+### Next.js Implementation
 
 ```typescript
-// app/(app)/(root)/legals/privacy/page.tsx
+// app/(app)/(root)/legals/[[...slug]]/page.tsx
 import { privacyPolicy } from "@comms-id/legal-documents";
 
 export default function PrivacyPage() {
@@ -64,120 +94,73 @@ export default function PrivacyPage() {
     <div className="container mx-auto p-6">
       <h1>{privacyPolicy.metadata.title}</h1>
       <Badge>v{privacyPolicy.metadata.version}</Badge>
+      
       <div
         className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: privacyPolicy.html }}
       />
-      <footer>Last updated: {privacyPolicy.metadata.lastUpdated}</footer>
+      
+      <footer>
+        Last updated: {new Date(privacyPolicy.metadata.lastUpdated).toLocaleDateString()}
+      </footer>
     </div>
   );
 }
 ```
 
-### In React Native (monocomms/apps/comms-id-native-app)
+### React Native Implementation
 
 ```typescript
 import { privacyPolicy } from "@comms-id/legal-documents";
 import { WebView } from "react-native-webview";
 
 export function PrivacyScreen() {
-  return <WebView source={{ html: privacyPolicy.html }} style={{ flex: 1 }} />;
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; 
+            padding: 20px;
+            line-height: 1.6;
+          }
+        </style>
+      </head>
+      <body>
+        ${privacyPolicy.html}
+      </body>
+    </html>
+  `;
+  
+  return <WebView source={{ html: htmlContent }} style={{ flex: 1 }} />;
 }
 ```
 
-### Generate PDF on Demand
+### Implementing Document Routing
+
+The HTML output contains `href="#"` for all inter-document links. Your application must implement routing:
 
 ```typescript
-// API route for PDF generation (apps/www/app/api/policies/[slug]/pdf/route.ts)
-import { privacyPolicy } from "@comms-id/legal-documents";
-import { generatePDF } from "@/lib/pdf-generator";
+// Define your routing structure
+const policies: Record<string, { data: Policy; title: string }> = {
+  privacy: { data: privacyPolicy, title: "Privacy Policy" },
+  terms: { data: termsOfUse, title: "Terms of Use" },
+  "privacy-identity-services": { data: ispAspPrivacyNotice, title: "ISP/ASP Privacy Notice" },
+  "privacy-identity-exchange": { data: idxPrivacyNotice, title: "IDX Privacy Notice" },
+  "relying-party-agreement": { data: relyingPartyAgreement, title: "Relying Party Agreement" },
+};
 
-export async function GET(request, { params }) {
-  const pdf = await generatePDF(privacyPolicy.html);
-  return new Response(pdf, {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="privacy-policy-v${privacyPolicy.metadata.version}.pdf"`,
-    },
-  });
-}
+// Handle navigation in your app's routing system
 ```
 
-## Development Workflow
-
-### 1. Edit Policies
-
-```bash
-cd /Users/MN/GITHUB/comms.id/policies
-code src/Comms.ID_Privacy_Policy.md
-```
-
-### 2. Commit Changes
-
-```bash
-git add .
-git commit -m "feat: update data retention policy"
-git push origin main
-```
-
-### 3. Automatic Publishing
-
-GitHub Actions will:
-
-1. Run build script to convert MD → JS modules
-2. Each document version is tracked independently:
-   - Only documents with content changes get version bumps
-   - Version increments: patch (1.0.0 → 1.0.1) for content updates
-   - Package version follows conventional commits:
-     - `fix:` → Patch
-     - `feat:` → Minor
-     - `BREAKING CHANGE:` → Major
-3. Publish to GitHub Packages registry
-4. Create Git tag and GitHub release
-
-### 4. Update Consumer Apps
-
-```bash
-# In consumer apps
-pnpm update @comms-id/legal-documents
-```
-
-Or if using `"latest"` tag, updates automatically on next install.
-
-## Project Structure
-
-```bash
-/policies/
-├── src/                                 # Source markdown files
-│   ├── Comms.ID_Privacy_Policy.md
-│   ├── Comms.ID_Terms_of_Use.md
-│   ├── Comms.ID_ISP_ASP_Privacy_Notice.md
-│   ├── Comms.ID_IDX_Privacy_Notice.md
-│   └── Comms.ID_Relying_Party_Agreement.md
-├── scripts/
-│   ├── build.js                        # Build script (MD → JS)
-│   └── document-versions.json          # Individual document version tracking
-├── dist/                               # Generated output (gitignored)
-│   ├── index.js                       # Main exports
-│   ├── privacy-policy.js
-│   ├── terms-of-use.js
-│   └── types.d.ts
-├── .github/
-│   └── workflows/
-│       └── publish.yml                # CI/CD pipeline
-├── package.json                        # NPM configuration
-├── tsconfig.json                       # TypeScript config
-└── README.md                          # This file
-```
-
-## Available Policies
-
-Current policies exported by this package:
+## Available Documents
 
 - `privacyPolicy` - Main privacy policy
 - `termsOfUse` - Terms of use
-- `ispAspPrivacyNotice` - ISP/ASP specific privacy notice
-- `idxPrivacyNotice` - IDX privacy notice
+- `ispAspPrivacyNotice` - Identity Service Provider/Attribute Service Provider privacy notice
+- `idxPrivacyNotice` - Identity Exchange privacy notice
 - `relyingPartyAgreement` - Relying party agreement
 
 ## API Reference
@@ -186,158 +169,161 @@ Current policies exported by this package:
 
 ```typescript
 interface Policy {
-  markdown: string; // Original markdown content (with injected version/date)
-  html: string; // Rendered HTML
-  plainText: string; // Plain text version
+  markdown: string;    // Original markdown with injected version/date
+  html: string;        // Rendered HTML (links as href="#")
+  plainText: string;   // Plain text version
   metadata: {
     // From frontmatter
-    title: string; // Document title
-    description: string; // Document description
-    type: string; // Document type (privacy-policy, terms-of-use, agreement, etc.)
-    author: string; // Author organization
-    jurisdiction: string; // Legal jurisdiction
-    role?: string; // For privacy notices (ISP/ASP, IXP)
+    title: string;
+    description: string;
+    type: string;
+    author: string;
+    jurisdiction: string;
+    role?: string;
     // Computed values
-    version: string; // Individual document version
-    lastUpdated: string; // ISO date string from Git history
-    filename: string; // Original filename
-    hash: string; // SHA256 hash of content
+    version: string;        // Individual document version (e.g., "1.0.2")
+    lastUpdated: string;    // ISO date from Git history
+    filename: string;       // Original filename
+    hash: string;          // SHA256 content hash
   };
 }
 ```
 
-### Exports
+## Versioning System
 
-```typescript
-// Named exports for each policy
-export const privacyPolicy: Policy;
-export const termsOfUse: Policy;
-export const ispAspPrivacyNotice: Policy;
-export const idxPrivacyNotice: Policy;
-export const relyingPartyAgreement: Policy;
+This package uses a **dual versioning system**:
 
-// Convenience export for all documents
-export const allDocuments: Record<string, Policy>;
+### 1. Package Version (package.json)
+- Represents the overall package version for GitHub Packages distribution
+- Incremented on every commit based on conventional commits
+- Used for package management (`pnpm add @comms-id/legal-documents@0.3.1`)
+
+### 2. Individual Document Versions (metadata.version)
+- Each legal document has its own independent version
+- Only incremented when that specific document's content changes
+- Tracked via SHA256 content hashing (ignores whitespace/comments)
+- Allows consumers to track changes to specific policies
+- Example: Privacy Policy v1.0.2, Terms v1.0.1
+
+## Development Workflow
+
+### 1. Edit Documents
+
+Edit markdown files in `/src/`:
+```bash
+cd /Users/MN/GITHUB/comms.id/policies
+code src/Comms.ID_Privacy_Policy.md
 ```
 
-## Versioning Strategy
+**Important:** Do NOT add version or date lines to the markdown - these are automatically injected during build.
 
-### Package Version
-The package follows semantic versioning based on conventional commits.
-
-### Document Versions
-Each document maintains its own version:
-- Versions only increment when document content actually changes
-- Whitespace and comment changes are ignored
-- Content changes tracked via SHA256 hashing
-- Version format: `major.minor.patch` (e.g., 1.0.1)
-
-### Commit Convention
-
-Use conventional commits for automatic versioning:
+### 2. Build Locally
 
 ```bash
-# Patch version bump
-git commit -m "fix: correct typo in section 3.2"
-
-# Minor version bump
-git commit -m "feat: add biometric data handling policy"
-
-# Major version bump
-git commit -m "feat!: update terms for new legislation"
-```
-
-## CI/CD Pipeline
-
-The GitHub Actions workflow handles:
-
-1. **Trigger**: Push to main branch
-2. **Build**: Convert markdown to distribution formats
-3. **Version**: 
-   - Package version: Bump based on commit messages
-   - Document versions: Increment only for changed documents
-4. **Publish**: Push to GitHub Packages registry
-5. **Release**: Create GitHub release with changelog
-
-## Local Development
-
-### Setup
-
-```bash
-# Install dependencies
-pnpm install
-
-# Build locally
 pnpm build
-
-# Test the package locally
-pnpm link
 ```
 
-### Testing in Consumer Apps
+This will:
+- Detect content changes via hashing
+- Increment individual document versions if changed
+- Inject version and date into markdown
+- Generate HTML and plain text formats
+- Output to `/dist/`
+
+### 3. Commit and Push
 
 ```bash
-# In policies directory
-pnpm link
+git add .
+git commit -m "feat: update data retention policy"
+git push origin main
+```
 
-# In consumer app
-pnpm link @comms-id/legal-documents
+### 4. Automatic Publishing
+
+GitHub Actions will:
+1. Bump package version based on commit message
+2. Build all documents
+3. Publish to GitHub Packages
+4. Create Git tag and GitHub release
+
+## Project Structure
+
+```
+/policies/
+├── src/                                 # Source markdown documents
+│   ├── Comms.ID_Privacy_Policy.md
+│   ├── Comms.ID_Terms_of_Use.md
+│   ├── Comms.ID_ISP_ASP_Privacy_Notice.md
+│   ├── Comms.ID_IDX_Privacy_Notice.md
+│   └── Comms.ID_Relying_Party_Agreement.md
+├── scripts/
+│   ├── build.js                        # Build script with versioning logic
+│   └── document-versions.json          # Individual document version tracking
+├── dist/                               # Generated output (gitignored)
+│   ├── index.js                       # ESM exports
+│   ├── index.cjs                      # CommonJS exports
+│   └── index.d.ts                     # TypeScript definitions
+├── reference/                          # External reference documents (not distributed)
+│   └── README.md                       # Explains reference materials
+├── .github/
+│   └── workflows/
+│       └── publish.yml                # CI/CD pipeline
+├── package.json                        # Package configuration
+└── README.md                          # This file
 ```
 
 ## Troubleshooting
 
-### Package Not Updating
+### Authentication Issues
 
-```bash
-# Clear cache and reinstall
-pnpm store prune
-pnpm install @comms-id/legal-documents@latest --force
+If you get a 401 error:
+1. Ensure your GitHub token has `read:packages` scope
+2. Verify token is correctly set in `.npmrc`
+3. Check you're using the correct environment variable name
+4. Ensure your token has access to the comms-id organization
 
-# Ensure NPM_TOKEN is set for GitHub Packages
-export NPM_TOKEN=ghp_your_token_here
-```
+### Package Not Found
 
-### Build Failures
-
-Check GitHub Actions logs at:
-`https://github.com/comms-id/policies/actions`
+The package is private to the comms-id organization. Your GitHub token must have access to the organization.
 
 ### Version Conflicts
 
+Clear your package manager cache:
 ```bash
-# Check installed version
-pnpm list @comms-id/legal-documents
-
-# Force specific version
-pnpm add @comms-id/legal-documents@1.2.3
+pnpm store prune
+rm -rf node_modules
+pnpm install
 ```
 
-## Future Enhancements
+### Build Issues
 
-- [ ] PDF generation in package
-- [ ] Diff view between versions
-- [ ] Analytics integration
-- [ ] Webhook notifications for updates
+Check GitHub Actions logs at: https://github.com/comms-id/policies/actions
 
-## License
+## Important Notes
 
-See [LICENSE](./LICENSE) file.
+### For AI Consumers
 
-## Contributing
+When implementing this package:
+1. This is a **GitHub Package**, not on public npm registry
+2. Authentication via GitHub token is **required**
+3. Inter-document links come as `href="#"` - you must implement routing
+4. Each document has its own version in `metadata.version`
+5. The `/reference/` folder contains external examples, not Comms.ID policies
 
-1. Create feature branch
-2. Make changes to source files in `/src`
-3. Test locally with `pnpm build`
-4. Submit PR with conventional commit messages
-5. CI will publish after merge to main
+### Commit Guidelines
+
+Use conventional commits for automatic versioning:
+```bash
+git commit -m "fix: correct typo in privacy policy"    # Patch bump
+git commit -m "feat: add new GDPR section"            # Minor bump  
+git commit -m "feat!: restructure all policies"       # Major bump
+```
 
 ## Support
-
-For issues or questions:
 
 - GitHub Issues: [comms-id/policies](https://github.com/comms-id/policies/issues)
 - Internal: Contact platform team
 
 ---
 
-**This package is part of the Comms.ID platform ecosystem**
+**This package is part of the Comms.ID digital identity platform**

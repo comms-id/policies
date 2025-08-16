@@ -1,5 +1,30 @@
 #!/usr/bin/env node
 
+/**
+ * Legal Documents Build Script
+ * 
+ * VERSIONING SYSTEM:
+ * This package uses a dual versioning system to provide granular version tracking:
+ * 
+ * 1. PACKAGE VERSION (package.json):
+ *    - Represents the overall package version
+ *    - Incremented on every commit based on conventional commits
+ *    - Used for NPM package distribution
+ *    - Example: 0.3.1
+ * 
+ * 2. INDIVIDUAL DOCUMENT VERSIONS (document-versions.json):
+ *    - Each legal document has its own independent version
+ *    - Only incremented when that specific document's content changes
+ *    - Tracked via SHA256 content hashing (ignoring whitespace/comments)
+ *    - Allows consumers to track changes to specific policies
+ *    - Example: Privacy Policy v1.0.1, Terms v1.0.0
+ * 
+ * This dual system ensures:
+ * - Package updates don't falsely indicate policy changes
+ * - Each document's version accurately reflects its change history
+ * - Consumers can track specific document updates independently
+ */
+
 const fs = require('fs').promises;
 const path = require('path');
 const { marked } = require('marked');

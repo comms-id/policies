@@ -10,7 +10,7 @@ jurisdiction: Queensland, Australia
 
 Welcome to Comms.ID. These Terms of Use ("Terms") form a binding legal agreement between you ("you," "your") and Comms.ID Pty Ltd ("Comms.ID," "we," "us," "our"). This agreement governs your access to and use of the Comms.ID platform, including our applications (web, iOS, Android), services, and websites.
 
-By creating a Comms.ID account or using our platform, you agree to be bound by these Terms and our privacy documents, including our **[Privacy Policy](/legals/privacy)**, **[Identity Services Privacy Notice](/legals/privacy-identity-services)**, and **[Identity Exchange Privacy Notice](/legals/privacy-identity-exchange)**. Please read them carefully.
+By creating a Comms.ID account or using our platform, you agree to be bound by these Terms and our privacy documents, including our **[Privacy Policy][privacy-policy]**, **[Identity Services Privacy Notice][privacy-identity-services]**, and **[Identity Exchange Privacy Notice][privacy-identity-exchange]**. Please read them carefully.
 
 ## **1. Your Comms.ID Account**
 
@@ -45,7 +45,7 @@ You agree to use the Comms.ID platform only for its intended purpose and in comp
 
 Our platform facilitates your secure interaction with third-party websites and services ("Relying Parties"). When you consent to share your information with a Relying Party, you understand and agree that:
 
-- Comms.ID acts as the Identity Exchange, managing the consent and information flow as described in our **[Identity Exchange Privacy Notice](/legals/privacy-identity-exchange)**.
+- Comms.ID acts as the Identity Exchange, managing the consent and information flow as described in our **[Identity Exchange Privacy Notice][privacy-identity-exchange]**.
 - We are not responsible for the business practices, security, or privacy policies of any Relying Party. Any dispute you have with a Relying Party must be resolved directly with them.
 - Your relationship with a Relying Party is governed by their separate terms and conditions and privacy policies.
 
@@ -54,7 +54,7 @@ Our platform facilitates your secure interaction with third-party websites and s
 - **Termination by You:** You may terminate this agreement at any time by closing your Comms.ID account through our applications.
 - **Termination by Us:** We reserve the right to suspend or terminate your access to the platform, without notice, if you breach these Terms, engage in any prohibited activity, or if we are required to do so by law.
 
-Please note that upon termination, some of your information must be retained to comply with our legal obligations, as described in our **[Identity Services Privacy Notice](/legals/privacy-identity-services)**.
+Please note that upon termination, some of your information must be retained to comply with our legal obligations, as described in our **[Identity Services Privacy Notice][privacy-identity-services]**.
 
 ## **6. Disclaimers and Limitation of Liability**
 
@@ -67,4 +67,10 @@ To the fullest extent permitted by law, Comms.ID will not be liable for any indi
 - **Governing Law:** These Terms are governed by the laws of **Queensland, Australia**, and you agree to submit to the exclusive jurisdiction of the courts of that territory.
 - **Changes to These Terms:** We may modify these Terms from time to time. We will provide you with reasonable notice of any material changes. Your continued use of the platform after such changes constitutes your acceptance of the new Terms.
 
-For questions about these Terms, please contact us using the secure communications channels listed in our **[Privacy Policy](/legals/privacy)**.
+For questions about these Terms, please contact us using the secure communications channels listed in our **[Privacy Policy][privacy-policy]**.
+
+[privacy-policy]: #
+[terms-of-use]: #
+[privacy-identity-services]: #
+[privacy-identity-exchange]: #
+[relying-party-agreement]: #
