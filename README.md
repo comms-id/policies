@@ -8,10 +8,6 @@ Centralised, version-controlled legal documents for all Comms.ID products and ap
 
 This repository manages the source of truth for all Comms.ID legal documents. It provides automated versioning, multi-format generation, and distribution via GitHub Packages.
 
-## Maintainer Documentation
-
-This documentation is for maintainers of the legal documents package. For usage in applications, see [USAGE.md](./USAGE.md).
-
 ## Project Structure
 
 ```
@@ -34,7 +30,10 @@ This documentation is for maintainers of the legal documents package. For usage 
 
 ## How the Dual Versioning System Works
 
+Basically, you make some changes to any of the policy documents, and following the steps in the "Development Workflow" below, once you commit and push changes to github the document versioning and updated at date is automatically handled.
+
 ### Package Version (package.json)
+
 - Increments on every commit to main branch
 - Based on conventional commit messages:
   - `fix:` → patch (0.3.3 → 0.3.4)
@@ -43,6 +42,7 @@ This documentation is for maintainers of the legal documents package. For usage 
 - Used for npm package distribution
 
 ### Individual Document Versions
+
 - Stored in `scripts/document-versions.json`
 - Only increments when document content changes
 - Detected via SHA256 content hashing
@@ -57,14 +57,16 @@ This documentation is for maintainers of the legal documents package. For usage 
    ```bash
    code src/Comms.ID_Privacy_Policy.md
    ```
-   
 2. **Build locally** to update versions:
+
    ```bash
    pnpm build
    ```
+
    This updates `scripts/document-versions.json` with new versions/hashes.
 
 3. **Commit all changes**:
+
    ```bash
    git add .
    git commit -m "fix: update data retention period"
@@ -78,6 +80,7 @@ This documentation is for maintainers of the legal documents package. For usage 
 ### Build Process
 
 The build script (`scripts/build.js`):
+
 1. Reads markdown from `/src/`
 2. Calculates content hash for change detection
 3. Increments version if content changed
@@ -88,6 +91,7 @@ The build script (`scripts/build.js`):
 ### CI/CD Pipeline
 
 On push to main, GitHub Actions:
+
 1. Determines version bump from commit message
 2. Updates package.json version
 3. Runs build script
@@ -143,6 +147,7 @@ pnpm build
 ### Version Sync Issues
 
 If document versions seem incorrect:
+
 1. Check `scripts/document-versions.json` is committed
 2. Run `pnpm build` locally before committing
 3. Ensure the build completes successfully
@@ -162,8 +167,7 @@ If document versions seem incorrect:
 ## Support
 
 - GitHub Issues: [comms-id/policies](https://github.com/comms-id/policies/issues)
-- Internal: Contact platform team
 
 ---
 
-**This package is part of the Comms.ID digital identity platform**
+**This package is part of the Comms.ID Compliance, Communications, and Digital Identity Platform**
