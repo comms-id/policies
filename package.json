@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "USAGE.md"
   ],
   "exports": {
     ".": {
@@ -20,7 +21,9 @@
     "build": "node scripts/build.js",
     "prepublishOnly": "pnpm build",
     "test": "echo \"No tests configured\"",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "check-versions": "node scripts/check-versions.js",
+    "install-hooks": "cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
   },
   "keywords": [
     "comms-id",

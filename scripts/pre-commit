@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Pre-commit hook for Comms.ID Legal Documents
+# Ensures document versions are in sync before committing
+
+echo "🔍 Checking document version sync..."
+
+# Check if any markdown files in src/ are being committed
+if git diff --cached --name-only | grep -q "^src/.*\.md$"; then
+  echo "📝 Legal documents have been modified"
+  
+  # Run version check
+  if command -v pnpm > /dev/null 2>&1; then
+    pnpm check-versions
+  elif command -v npm > /dev/null 2>&1; then
+    npm run check-versions
+  else
+    node scripts/check-versions.js
+  fi
+  
+  # Exit with the check script's exit code
+  exit $?
+else
+  echo "✅ No legal documents modified, skipping version check"
+  exit 0
+fi
