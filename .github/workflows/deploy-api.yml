@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: comms-id/monorepo
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MONOREPO_DEPLOY_TOKEN }}
           path: monorepo
       
       - name: Copy API files to monorepo
