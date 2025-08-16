@@ -11,7 +11,7 @@ jurisdiction: Queensland, Australia
 
 ## **1. Purpose of This Notice**
 
-This notice explains what happens when you use your Comms.ID to access a 3rd party (a "Relying Party") website, app, or service. In these moments, we are acting as an **Identity Exchange (IXP)** in alignment with the Australian Government Digital ID System (AGDIS) framework.
+This notice explains what happens when you use your Comms.ID to access a 3rd party (a "Relying Party") website, app, or service. In these moments, we are acting as an **Identity Exchange Provider (IXP)** in alignment with the Australian Government Digital ID System (AGDIS) framework.
 
 Think of our Identity Exchange as a secure digital switchboard. It doesn't permanently store your identity; it manages the secure flow of information between you, your Comms.ID, and the Relying Party you wish to interact with. Its entire function is built around your control and your consent, and a particular distiction of Comms.ID Identity Exchange vs other identity systems is the principle of data minimisation.
 
