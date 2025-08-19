@@ -163,29 +163,11 @@ async function processMarkdown(content, filename, documentVersions) {
     gitDate = null;
   }
   
-  // Remove manual version/date lines and inject automated ones
   let markdown = markdownContent;
   
-  // Remove existing date and version lines (handles both "Last Updated" and "Effective Date")
   markdown = markdown.replace(/\*\*Last Updated:\*\*.+\n/gi, '');
   markdown = markdown.replace(/\*\*Effective Date:\*\*.+\n/gi, '');
   markdown = markdown.replace(/\*\*Version:\*\*.+\n/gi, '');
-  
-  // Determine which date label to use based on document type
-  const dateLabel = filename.includes('Relying_Party_Agreement') ? 'Effective Date' : 'Last Updated';
-  
-  // Inject automated version and date at the top (after the title)
-  const lines = markdown.split('\n');
-  const titleIndex = lines.findIndex(line => line.startsWith('#'));
-  if (titleIndex !== -1) {
-    lines.splice(titleIndex + 1, 0, 
-      '',
-      `**${dateLabel}:** ${gitDate ? new Date(gitDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}`,
-      `**Version:** ${documentVersion}`,
-      ''
-    );
-    markdown = lines.join('\n');
-  }
   
   // Generate HTML with the updated markdown
   const html = marked(markdown);

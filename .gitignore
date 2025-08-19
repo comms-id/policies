@@ -3,7 +3,6 @@ node_modules/
 .pnpm-debug.log*
 
 # Build output
-dist/
 *.tsbuildinfo
 
 # Environment variables
