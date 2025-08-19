@@ -84,6 +84,17 @@ jobs:
       - name: Build package
         run: pnpm build
       
+      - name: Commit built files
+        run: |
+          # Check if dist has changes
+          if [ -n "$(git status --porcelain dist/)" ]; then
+            git add dist/
+            git commit -m "chore: update built files [skip ci]"
+            echo "Built files committed"
+          else
+            echo "No changes to built files"
+          fi
+      
       - name: Publish to GitHub Packages
         run: |
           # Check if package exists and get current version
