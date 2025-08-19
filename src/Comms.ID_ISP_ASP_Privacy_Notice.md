@@ -1,13 +1,10 @@
 ---
-title: Comms.ID Identity Services Privacy Notice
-description: Privacy Notice for Identity Service Provider (ISP) and Attribute Service Provider (ASP) functions
+title: Comms.ID ISP and ASP Privacy Notice
+description: Privacy Notice for Identity Service Provider (ISP) and Attribute Service Provider (ASP) roles
 type: privacy-notice
 role: ISP/ASP
 author: COMMS.ID PTY LTD
-jurisdiction: Queensland, Australia
 ---
-
-# **Comms.ID Identity Services Privacy Notice**
 
 ## **1. Purpose of This Notice**
 

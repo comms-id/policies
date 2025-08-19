@@ -1,12 +1,9 @@
 ---
 title: Comms.ID Relying Party Agreement
-description: Agreement for entities using COMMS.ID as a Relying Party
+description: Agreement for entities and their team member represtitives using COMMS.ID as a Relying Party
 type: agreement
 author: COMMS.ID PTY LTD
-jurisdiction: Queensland, Australia
 ---
-
-# **Comms.ID Relying Party Agreement**
 
 This Relying Party Agreement ("Agreement") is a binding legal contract between **Comms.ID Pty Ltd** (ACN: 686 963 904), a company incorporated in Queensland, Australia ("Comms.ID," "we," "us," "our"), and the entity registering to use the Comms.ID platform as a Relying Party ("Relying Party," "you," "your").
 

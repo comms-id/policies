@@ -1,15 +1,10 @@
 ---
-title: Comms.ID Identity Exchange Privacy Notice
-description: Privacy Notice for Identity Exchange (IXP) functions
+title: Comms.ID Identity Exchange Provider (IXP) Privacy Notice
+description: Privacy Notice for Identity Exchange Provider (IXP) role
 type: privacy-notice
 role: IXP
 author: COMMS.ID PTY LTD
-jurisdiction: Queensland, Australia
 ---
-
-# **Comms.ID Identity Exchange Privacy Notice**
-
-## **1. Purpose of This Notice**
 
 This notice explains what happens when you use your Comms.ID to access a 3rd party (a "Relying Party") website, app, or service. In these moments, we are acting as an **Identity Exchange Provider (IXP)** in alignment with the Australian Government Digital ID System (AGDIS) framework.
 

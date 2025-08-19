@@ -1,14 +1,9 @@
 ---
 title: Comms.ID Privacy Policy
-description: Privacy Policy for COMMS.ID digital identity platform
+description: Privacy Policy for COMMS.ID Digital Identity and Secure Communications Platform
 type: privacy-policy
 author: COMMS.ID PTY LTD
-jurisdiction: Queensland, Australia
 ---
-
-# **Comms.ID Privacy Policy**
-
-## **1. Our Commitment to You**
 
 Welcome to Comms.ID. Our mission is to build a more trustworthy digital world by combating fraud and misinformation. We do this by providing a secure, high-assurance digital identity platform that replaces insecure, anonymous interactions with a verified and consent-driven ecosystem.
 
