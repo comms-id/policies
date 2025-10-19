@@ -1,5 +1,5 @@
 // Auto-generated type definitions for legal documents
-// Package version: 0.6.1
+// Package version: 0.6.2
 
 export interface Policy {
   markdown: string;
