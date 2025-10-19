@@ -2,11 +2,11 @@
 
 Centralised, version-controlled legal documents for all Comms.ID products and applications.
 
-> **For package consumers:** See [USAGE.md](./USAGE.md) for installation and implementation instructions.
+> **For runtime usage:** See [RUNTIME_USAGE.md](./RUNTIME_USAGE.md) for integration instructions.
 
 ## Overview
 
-This repository manages the source of truth for all Comms.ID legal documents. It provides automated versioning, multi-format generation, and distribution via GitHub Packages.
+This repository manages the source of truth for all Comms.ID legal documents. It provides automated versioning, multi-format generation, and distribution via GitHub Releases.
 
 ## Project Structure
 
@@ -21,9 +21,9 @@ This repository manages the source of truth for all Comms.ID legal documents. It
 ├── scripts/
 │   ├── build.js                        # Build script with versioning logic
 │   └── document-versions.json          # Individual document version tracking
-├── dist/                               # Generated output (gitignored)
+├── dist/                               # Generated output (committed to git)
 ├── reference/                          # External reference documents
-├── USAGE.md                           # Consumer documentation
+├── RUNTIME_USAGE.md                   # Runtime integration documentation
 ├── README.md                          # This file (maintainer documentation)
 └── CLAUDE.md                          # AI assistant context
 ```
@@ -39,7 +39,7 @@ Basically, you make some changes to any of the policy documents, and following t
   - `fix:` → patch (0.3.3 → 0.3.4)
   - `feat:` → minor (0.3.3 → 0.4.0)
   - `feat!:` or `BREAKING CHANGE` → major (0.3.3 → 1.0.0)
-- Used for npm package distribution
+- Used for GitHub Release tagging
 
 ### Individual Document Versions
 
@@ -95,7 +95,7 @@ On push to main, GitHub Actions:
 1. Determines version bump from commit message
 2. Updates package.json version
 3. Runs build script
-4. Publishes to GitHub Packages
+4. Commits built files to repository
 5. Creates GitHub release with tag
 
 ### Important Notes
@@ -158,9 +158,9 @@ If document versions seem incorrect:
 - Verify frontmatter is valid YAML
 - Check GitHub Actions logs: https://github.com/comms-id/policies/actions
 
-### Publishing Issues
+### Release Issues
 
-- Verify GitHub token has `write:packages` scope for publishing
+- Verify GitHub token has `contents: write` permissions
 - Check package.json version hasn't been manually edited
 - Ensure commit message follows conventional format
 

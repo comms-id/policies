@@ -12,7 +12,6 @@ jobs:
     
     permissions:
       contents: write
-      packages: write
       
     steps:
       - name: Checkout repository
@@ -25,8 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@comms-id'
       
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -94,25 +91,7 @@ jobs:
           else
             echo "No changes to built files"
           fi
-      
-      - name: Publish to GitHub Packages
-        run: |
-          # Check if package exists and get current version
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          # For GitHub Packages, we need to check differently
-          REMOTE_VERSION=$(npm view $PACKAGE_NAME version 2>/dev/null || echo "0.0.0")
-          LOCAL_VERSION=$(node -p "require('./package.json').version")
-          
-          # Only publish if local version is newer
-          if [ "$LOCAL_VERSION" != "$REMOTE_VERSION" ]; then
-            npm publish
-            echo "✅ Published version $LOCAL_VERSION to GitHub Packages"
-          else
-            echo "⏭️ Version $LOCAL_VERSION already published, skipping"
-          fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Create GitHub Release
         if: steps.bump.outputs.new_version != ''
         uses: softprops/action-gh-release@v1
@@ -121,15 +100,21 @@ jobs:
           name: Release ${{ steps.bump.outputs.new_version }}
           body: |
             ## Changes in this release
-            
+
             ${{ github.event.head_commit.message }}
-            
-            ### Package Installation
-            ```bash
-            pnpm add @comms-id/legal-documents@${{ steps.bump.outputs.new_version }}
-            ```
-            
+
+            ### Installation
+
+            This package is distributed via GitHub Releases. To use it in your project:
+
+            1. Download the release assets or clone the repository
+            2. Import from the `dist/` directory:
+               ```javascript
+               import { privacyPolicy, termsOfUse } from '@comms-id/legal-documents';
+               ```
+
             ### Document Versions
+
             Check [document-versions.json](https://github.com/comms-id/policies/blob/main/scripts/document-versions.json) for current document versions.
           draft: false
           prerelease: false

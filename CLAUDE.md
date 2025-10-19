@@ -4,26 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is the **Comms.ID Legal Documents Package** - a centralized, version-controlled system for managing all legal documents (Privacy Policy, Terms of Use, etc.) across the Comms.ID digital identity platform. Documents are published as an npm package to GitHub Packages for consumption by multiple applications.
+This is the **Comms.ID Legal Documents Package** - a centralized, version-controlled system for managing all legal documents (Privacy Policy, Terms of Use, etc.) across the Comms.ID digital identity platform. Documents are distributed via GitHub Releases for consumption by multiple applications.
 
 ## Documentation Structure
 
 - **[README.md](./README.md)** - Maintainer documentation (development, building, versioning)
-- **[USAGE.md](./USAGE.md)** - Consumer documentation (installation, imports, examples)
+- **[RUNTIME_USAGE.md](./RUNTIME_USAGE.md)** - Runtime integration documentation (imports, hooks)
 - **[FUTURE_DEVELOPMENT.md](./FUTURE_DEVELOPMENT.md)** - Roadmap and enhancement ideas
 
 When working on:
 - **Package maintenance**: Refer to README.md
-- **Implementing in apps**: Refer to USAGE.md only
+- **Implementing runtime usage**: Refer to RUNTIME_USAGE.md
 - **Planning features**: Check FUTURE_DEVELOPMENT.md
 
 ## Key Features
 
 - **Single Source of Truth**: Markdown files in `/src/` with YAML frontmatter
-- **Dual Versioning System**: Package version (npm) and individual document versions (content-based)
+- **Dual Versioning System**: Package version (releases) and individual document versions (content-based)
 - **Multi-Format Export**: Markdown, HTML, and plain text outputs
-- **GitHub Packages Distribution**: Private package requiring authentication
-- **Automated CI/CD**: Version bumping and publishing on push to main
+- **GitHub Releases Distribution**: Built files committed to repository and tagged in releases
+- **Automated CI/CD**: Version bumping and release creation on push to main
 
 ## Development Commands
 
@@ -80,25 +80,19 @@ GitHub Actions workflow (`.github/workflows/publish.yml`):
 1. Triggered on push to main
 2. Determines version bump from commit message (major/minor/patch)
 3. Builds package with updated versions
-4. Publishes to GitHub Packages
+4. Commits built files to repository
 5. Creates GitHub release with tag
 
-### Package Distribution
+### Distribution Method
 
-Published to GitHub Packages (not public npm):
-- Registry: `https://npm.pkg.github.com/`
-- Scope: `@comms-id`
-- Access: Restricted (requires GitHub token with `read:packages`)
+Built files are committed to the repository and distributed via:
+- Direct imports from the repository
+- GitHub Releases with tagged versions
+- Runtime imports using `dist/` directory
+
+Applications can import directly from the repository or download specific releases.
 
 ## Important Implementation Notes
-
-### GitHub Packages Authentication
-
-Consumers must configure authentication in their `.npmrc`:
-```bash
-@comms-id:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
-```
 
 ### Document Structure
 
