@@ -38,3 +38,7 @@ temp/
 package-lock.json
 yarn.lock
 .vercel
+
+# AI agent instructions
+CLAUDE.md
+AGENTS.md
