@@ -1,6 +1,6 @@
 {
   "name": "@comms-id/legal-documents",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Centralised legal documents for Comms.ID platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
